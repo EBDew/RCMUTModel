@@ -60,6 +60,10 @@ insetXlim = [2.6 3.0]; %Horizontal long part
 shrinkfactor = 4.5;%5; %matches above
 insetLW = 1.75; %matches other figure;
 
+%split plot
+plotFig5a = 1;
+plotFig5b = 1;
+
 %% Plotting:
 ScreenSize = get(0,'ScreenSize');
 FigWidth = 500;
@@ -234,4 +238,103 @@ if plotZMag && plotZMagInset2ndIdea
     moveFactor = 0.15;
     ax2.Position = [ax2.Position(1) + moveFactor  ax2.Position(1) + moveFactor  ax2.Position(3)   ax2.Position(4)];
 
+end
+
+
+if plotFig5a
+
+    clear LegStrings;
+    Fig5a = figure(figoffset+NoFigs);
+    clf;
+    try
+        Fig5a.Position = GenerateFigPositions(NoFigs,FigWidth,FigHeight, XStartPos,0,ScreenSize,85);
+    catch
+        Fig5a.Position = [(XStartPos + NoFigs*FigWidth) YStartPos FigWidth FigHeight];
+    end
+    NoFigs = NoFigs + 1;
+    hold on;box on;
+
+    plot(test.f{1}/1e6,abs(test.Zin{1}),'-','Color',Model3Colors(2,:),'linewidth',ModelLineW)
+    plot(f_tot(:,1),ZMag(:,1),Marker2D,'Color',COMSOLColors(2,:),'linewidth',COMSOLLW(2));
+    plot(f3_tot(:,1),Z3Mag(:,1),Marker3D,'Color',COMSOL3Colors(2,:),'linewidth',C3LW)
+
+    %these are swapped because they get swapped again later - it's a dumb solution - swap the order of the leg strings if not plotting in reverse order
+    LegStrings{3*(ii-1) +1} = sprintf('COMSOL 3D');
+    LegStrings{3*(ii-1) +2} = sprintf('COMSOL 2D');
+    LegStrings{3*(ii-1) +3} = sprintf('Model');
+
+    %ylabel('Impedance Magnitude (Ohms)')
+    ylabel('Impedance Magnitude (Ω)')
+    xlabel('Frequency (MHz)')
+    
+    %if reversed:
+    LegStrings = LegStrings(length(LegStrings):-1:1);
+
+    legend(LegStrings); 
+    legend('boxoff');
+
+    ax1 = gca;
+    ax1.FontSize = 14;
+    ax1.LineWidth = 1.75;
+    %ax1.Legend.FontSize = 14;
+    ax1.FontName = 'Arial';
+    ax1.XColor = 'k';
+    ax1.YColor = 'k';
+    % title('Model vs FEM (Air)');
+    title('Model vs FEM (Air Medium, 20 V Bias)');
+
+    if Zplot_LogScale
+        set(gca, 'YScale', 'log')
+    end
+
+    ylim([1e3 1e5])
+end
+
+if plotFig5b
+
+    clear LegStrings;
+    Fig5b = figure(figoffset+NoFigs);
+    clf;
+    try
+        Fig5b.Position = GenerateFigPositions(NoFigs,FigWidth,FigHeight, XStartPos,0,ScreenSize,85);
+    catch
+        Fig5b.Position = [(XStartPos + NoFigs*FigWidth) YStartPos FigWidth FigHeight];
+    end
+    NoFigs = NoFigs + 1;
+    hold on;box on;
+
+    plot(test.f{2}/1e6,abs(test.Zin{2}),'-','Color',Model3Colors(2,:),'linewidth',ModelLineW)
+    plot(f_tot(:,2),ZMag(:,2),Marker2D,'Color',COMSOLColors(2,:),'linewidth',COMSOLLW(2));
+    plot(f3_tot(:,2),Z3Mag(:,2),Marker3D,'Color',COMSOL3Colors(2,:),'linewidth',C3LW)
+
+    %these are swapped because they get swapped again later - it's a dumb solution - swap the order of the leg strings if not plotting in reverse order
+    LegStrings{3*(ii-1) +1} = sprintf('COMSOL 3D');
+    LegStrings{3*(ii-1) +2} = sprintf('COMSOL 2D');
+    LegStrings{3*(ii-1) +3} = sprintf('Model');
+
+    %ylabel('Impedance Magnitude (Ohms)')
+    ylabel('Impedance Magnitude (Ω)')
+    xlabel('Frequency (MHz)')
+    
+    %if reversed:
+    LegStrings = LegStrings(length(LegStrings):-1:1);
+
+    legend(LegStrings); 
+    legend('boxoff');
+
+    ax1 = gca;
+    ax1.FontSize = 14;
+    ax1.LineWidth = 1.75;
+    %ax1.Legend.FontSize = 14;
+    ax1.FontName = 'Arial';
+    ax1.XColor = 'k';
+    ax1.YColor = 'k';
+    % title('Model vs FEM (Air)');
+    title('Model vs FEM (Air Medium, 90 V Bias)');
+
+    if Zplot_LogScale
+        set(gca, 'YScale', 'log')
+    end
+
+    ylim([1e2 1e6])
 end
